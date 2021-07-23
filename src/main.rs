@@ -9,13 +9,13 @@ use training_mode::training_mode;
 
 const LEARNING_RATE: f32 = 0.8;
 const DISCOUNT: f32 = 0.9;
-const N_EPISODES: usize = 1_000_000;
+const N_EPISODES: usize = 500_000;
 
 fn main() -> Result<(), std::io::Error> {
     let matches = App::new("TicTacToe AI")
         .version("v1.0")
         .author("Dusten Knull <dakatk97@gmail.com>")
-        .about("TicTacToe AI that learns using the Monte Carlo Control RL algorithm")
+        .about("TicTacToe AI that learns using the Q Learning algorithm")
         .arg(
             Arg::with_name("test")
                 .long("test")
