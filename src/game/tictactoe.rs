@@ -4,13 +4,13 @@ use std::{fmt, usize};
 
 #[derive(Debug)]
 pub struct TicTacToe {
-    board: [Symbol; 9]
+    board: [Symbol; 9],
 }
 
 impl TicTacToe {
     pub fn new() -> Self {
         Self {
-            board: [Symbol::EMPTY; 9]
+            board: [Symbol::EMPTY; 9],
         }
     }
 
@@ -51,7 +51,7 @@ impl TicTacToe {
             [1, 4, 7],
             [2, 5, 8],
             [0, 4, 8],
-            [2, 4, 6]
+            [2, 4, 6],
         ];
 
         for win_cond in win_conds.iter() {

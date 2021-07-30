@@ -1,6 +1,7 @@
 use crate::env::tictactoe_env::TicTacToeEnv;
 use rl::policies::GreedyPolicy;
 use rl::temporal_difference::off_policy::OffPolicyTd;
+use rl::trainer::Trainer;
 use serde_json;
 use std::io::prelude::*;
 use std::path::Path;
@@ -15,16 +16,20 @@ use std::{collections::BTreeMap, fs::File};
 ///
 /// Any IO errors that were caught while writing the JSON result
 /// to a file, Ok(()) otherwise
-pub fn training_mode(learning_rate: f32, discount: f32, n_episodes: usize) -> Result<(), std::io::Error> {
+pub fn training_mode(
+    learning_rate: f32,
+    discount: f32,
+    n_episodes: usize,
+) -> Result<(), std::io::Error> {
     let mut env = TicTacToeEnv::new();
-
     let behavior_policy = GreedyPolicy::new(None);
-    let mut ai = OffPolicyTd::new(learning_rate, discount);
+    let mut ai = OffPolicyTd::<u8>::new(learning_rate, discount);
 
-    for _ in 0..n_episodes {
-        ai.episode(&behavior_policy, &mut env)
-    }
-    let actions: BTreeMap<&String, &u8> = ai.results().iter().collect();
+    let actions: BTreeMap<&String, &u8> = Trainer::new(n_episodes, false)
+        .train(&mut ai, &behavior_policy, &mut env)
+        .results()
+        .iter()
+        .collect();
 
     let mut file = File::create(&Path::new("actions.json")).unwrap();
     let actions_json = serde_json::to_string_pretty(&actions).unwrap();

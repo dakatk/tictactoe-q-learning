@@ -9,7 +9,7 @@ use std::fmt::{Display, Formatter};
 pub enum Symbol {
     X = b'X',
     O = b'O',
-    EMPTY = b' '
+    EMPTY = b' ',
 }
 
 impl Symbol {

@@ -1,5 +1,5 @@
-mod game;
 mod env;
+mod game;
 mod testing_mode;
 mod training_mode;
 
@@ -20,9 +20,9 @@ fn main() -> Result<(), std::io::Error> {
             Arg::with_name("test")
                 .long("test")
                 .short("t")
-                .help("When this argument is specified, the program is run in 'policy test' mode")
+                .help("When this argument is specified, the program is run in 'policy test' mode"),
         )
-        .get_matches(); 
+        .get_matches();
 
     if matches.is_present("test") {
         testing_mode()

@@ -16,7 +16,7 @@ use crate::game::{symbol::Symbol, tictactoe::TicTacToe};
 pub fn testing_mode() -> Result<(), std::io::Error> {
     let mut file = match File::open("actions.json") {
         Err(err) => return Err(err),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let actions: HashMap<_, _> = {
@@ -43,9 +43,8 @@ fn play_game(actions: HashMap<String, u8>) {
     println!("{}\n", game);
 
     loop {
-        let state = game.flat();
-
-        let action = if actions.contains_key(&state) {
+        let state: String = game.flat();
+        let action: u8 = if actions.contains_key(&state) {
             actions[&state]
         } else {
             game.legal_moves()[0]
@@ -85,7 +84,6 @@ fn play_game(actions: HashMap<String, u8>) {
         game.place_piece(Symbol::X, player_action).unwrap();
 
         println!("\n{}\n", game);
-
         if game.is_winner(Symbol::X) {
             println!("X wins!");
             break;

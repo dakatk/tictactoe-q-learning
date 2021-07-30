@@ -2,6 +2,7 @@ use crate::game::symbol::Symbol;
 use crate::game::tictactoe::TicTacToe;
 use rand::prelude::*;
 use rl::environment::Environment;
+use rl::step::Step;
 
 const WIN_REWARD: f32 = 2.0;
 const BLOCK_REWARD: f32 = 0.1;
@@ -11,19 +12,18 @@ const DEFAULT_REWARD: f32 = 0.0;
 
 pub struct TicTacToeEnv {
     game: TicTacToe,
-    rng: ThreadRng
+    rng: ThreadRng,
 }
 
 impl TicTacToeEnv {
     pub fn new() -> Self {
         Self {
             game: TicTacToe::new(),
-            rng: thread_rng()
+            rng: thread_rng(),
         }
     }
 
     fn reward(&mut self, legal_moves: &Vec<u8>, action: u8) -> f32 {
-
         let mut losses = 0;
 
         for action in legal_moves {
@@ -52,23 +52,23 @@ impl TicTacToeEnv {
     }
 }
 
-impl Environment for TicTacToeEnv {
+impl Environment<u8> for TicTacToeEnv {
     fn reset(&mut self) -> String {
         self.game.reset();
         self.game.flat()
     }
 
-    fn step(&mut self, action: u8) -> (String, f32, bool) {
+    fn step(&mut self, action: u8) -> Step {
         self.game.place_piece(Symbol::O, action).unwrap();
         let state: String = self.game.flat();
 
         if self.game.is_winner(Symbol::O) {
-            return (state, WIN_REWARD, true);
+            return Step::new(state, WIN_REWARD, true);
         }
 
         let legal_moves: Vec<u8> = self.game.legal_moves();
         if legal_moves.is_empty() {
-            return (state, DRAW_REWARD, true);
+            return Step::new(state, DRAW_REWARD, true);
         }
 
         let reward: f32 = self.reward(&legal_moves, action);
@@ -79,7 +79,7 @@ impl Environment for TicTacToeEnv {
         let done: bool = self.game.is_winner(Symbol::X);
         let state: String = self.game.flat();
 
-        (state, reward, done)
+        Step::new(state, reward, done)
     }
 
     fn allowed_actions(&self) -> Vec<u8> {
